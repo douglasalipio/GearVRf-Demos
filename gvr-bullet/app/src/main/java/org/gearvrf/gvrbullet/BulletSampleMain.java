@@ -323,6 +323,7 @@ public class BulletSampleMain extends GVRMain {
         mSphereRigidBody = new GVRRigidBody(mGVRContext);
 
         mSphereRigidBody.setCollisionType(COL_BALL);
+        mSphereRigidBody.setEnable(false);
         mSphereRigidBody.setMass(mass);
         mSphereRigidBody.setRestitution(1.5f);
         mSphereRigidBody.setFriction(0.5f);
