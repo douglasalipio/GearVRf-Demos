@@ -15,24 +15,24 @@
 
 package org.gearvrf.gvroutline;
 
-import java.io.IOException;
-import java.util.EnumSet;
+import android.util.Log;
 
 import org.gearvrf.GVRActivity;
 import org.gearvrf.GVRAndroidResource;
 import org.gearvrf.GVRContext;
-import org.gearvrf.GVRScene;
-import org.gearvrf.GVRSceneObject;
+import org.gearvrf.GVRImportSettings;
 import org.gearvrf.GVRMain;
-import org.gearvrf.GVRTexture;
 import org.gearvrf.GVRMaterial;
-import org.gearvrf.GVRMesh;
 import org.gearvrf.GVRMaterial.GVRShaderType;
+import org.gearvrf.GVRMesh;
 import org.gearvrf.GVRRenderPass;
 import org.gearvrf.GVRRenderPass.GVRCullFaceEnum;
-import org.gearvrf.GVRImportSettings;
+import org.gearvrf.GVRScene;
+import org.gearvrf.GVRSceneObject;
+import org.gearvrf.GVRTexture;
 
-import android.util.Log;
+import java.io.IOException;
+import java.util.EnumSet;
 
 public class OutlineMain extends GVRMain {
 
@@ -72,7 +72,7 @@ public class OutlineMain extends GVRMain {
           // Create Base Material Pass
           // ---------------------------------------------------------------
           GVRMaterial outlineMaterial = new GVRMaterial(mGVRContext);
-  
+
           // Brown-ish outline color
           outlineMaterial.setVec4(OutlineShader.COLOR_KEY, 0.4f, 0.1725f,
                   0.1725f, 1.0f);

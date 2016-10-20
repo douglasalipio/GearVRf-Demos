@@ -74,7 +74,7 @@ public class BulletSampleMain extends GVRMain {
         addGroundMesh(scene, 0.0f, 0.4f, 0.0f, 0.0f);
 
         /*
-         * Create Some cubes in Bullet world and hit it with a sphere
+         * Create Some cubes in Bull'et world and hit it with a sphere
          */
         addCube(scene, 0.0f, 1.0f, -9.0f, CUBE_MASS);
         addCube(scene, 0.0f, 1.0f, -10.0f, CUBE_MASS);
@@ -264,6 +264,7 @@ public class BulletSampleMain extends GVRMain {
         // Physics body
         mSphereRigidBody = new GVRRigidBody(mGVRContext);
 
+        mSphereRigidBody.setEnable(false);
         mSphereRigidBody.setMass(mass);
         mSphereRigidBody.setRestitution(1.5f);
         mSphereRigidBody.setFriction(0.5f);

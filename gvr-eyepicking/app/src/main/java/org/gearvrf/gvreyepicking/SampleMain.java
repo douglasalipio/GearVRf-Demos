@@ -14,28 +14,43 @@
  */
 package org.gearvrf.gvreyepicking;
 
+import org.gearvrf.GVRActivity;
+import org.gearvrf.GVRAndroidResource;
+import org.gearvrf.GVRContext;
+import org.gearvrf.GVRMaterial;
+import org.gearvrf.GVRMaterial.GVRShaderType;
+import org.gearvrf.GVRMesh;
+import org.gearvrf.GVRMeshCollider;
+import org.gearvrf.GVRPicker;
+import org.gearvrf.GVRScene;
+import org.gearvrf.GVRSceneObject;
+import org.gearvrf.GVRScript;
+import org.gearvrf.GVRSphereCollider;
+import org.gearvrf.IPickEvents;
+import org.gearvrf.utility.Log;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.gearvrf.*;
-import org.gearvrf.GVRMaterial.GVRShaderType;
-import org.gearvrf.utility.Log;
-
 public class SampleMain extends GVRScript {
-    public class PickHandler implements IPickEvents
-    {
-        public void onEnter(GVRSceneObject sceneObj, GVRPicker.GVRPickedObject pickInfo)
-        {
+    public class PickHandler implements IPickEvents {
+        public void onEnter(GVRSceneObject sceneObj, GVRPicker.GVRPickedObject pickInfo) {
             sceneObj.getRenderData().getMaterial().setVec4("u_color", PICKED_COLOR_R, PICKED_COLOR_G, PICKED_COLOR_B, PICKED_COLOR_A);
         }
-        public void onExit(GVRSceneObject sceneObj)
-        {
+
+        public void onExit(GVRSceneObject sceneObj) {
             sceneObj.getRenderData().getMaterial().setVec4("u_color", UNPICKED_COLOR_R, UNPICKED_COLOR_G, UNPICKED_COLOR_B, UNPICKED_COLOR_A);
         }
-        public void onNoPick(GVRPicker picker) { }
-        public void onPick(GVRPicker picker) { }
-        public void onInside(GVRSceneObject sceneObj, GVRPicker.GVRPickedObject pickInfo) { }      
+
+        public void onNoPick(GVRPicker picker) {
+        }
+
+        public void onPick(GVRPicker picker) {
+        }
+
+        public void onInside(GVRSceneObject sceneObj, GVRPicker.GVRPickedObject pickInfo) {
+        }
     }
 
     private static final String TAG = "SampleMain";
@@ -55,7 +70,7 @@ public class SampleMain extends GVRScript {
     private GVRPicker mPicker;
 
     private GVRActivity mActivity;
-    
+
     SampleMain(GVRActivity activity) {
         mActivity = activity;
     }
@@ -207,7 +222,7 @@ public class SampleMain extends GVRScript {
     private void attachSphereCollider(GVRSceneObject sceneObject) {
         sceneObject.attachComponent(new GVRSphereCollider(mGVRContext));
     }
-    
+
     private void attachBoundsCollider(GVRSceneObject sceneObject) {
         sceneObject.attachComponent(new GVRMeshCollider(mGVRContext, true));
     }
