@@ -1,30 +1,24 @@
 package org.gearvrf.gvrshadowssample;
 
-import java.io.IOException;
-import java.util.concurrent.Future;
+import android.graphics.Color;
 
-import org.gearvrf.FutureWrapper;
 import org.gearvrf.GVRAndroidResource;
 import org.gearvrf.GVRCameraRig;
 import org.gearvrf.GVRContext;
 import org.gearvrf.GVRDirectLight;
-
+import org.gearvrf.GVRMain;
 import org.gearvrf.GVRMaterial;
-import org.gearvrf.GVRMesh;
 import org.gearvrf.GVRPhongShader;
 import org.gearvrf.GVRPointLight;
 import org.gearvrf.GVRRenderData;
 import org.gearvrf.GVRScene;
 import org.gearvrf.GVRSceneObject;
-import org.gearvrf.GVRMain;
-import org.gearvrf.GVRSpotLight;
-
 import org.gearvrf.GVRTexture;
 import org.gearvrf.GVRTransform;
 import org.joml.Quaternionf;
 
-import android.graphics.Color;
-import android.util.Log;
+import java.io.IOException;
+import java.util.concurrent.Future;
 
 public class ShadowsMain extends GVRMain {
 

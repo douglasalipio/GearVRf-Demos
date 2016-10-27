@@ -15,24 +15,25 @@
 
 package org.gearvrf.multilight;
 
-import java.io.IOException;
+import android.util.Log;
+import android.view.MotionEvent;
 
 import org.gearvrf.GVRAndroidResource;
 import org.gearvrf.GVRContext;
+import org.gearvrf.GVRDirectLight;
+import org.gearvrf.GVRMain;
 import org.gearvrf.GVRMaterial;
 import org.gearvrf.GVRPhongShader;
 import org.gearvrf.GVRRenderData;
 import org.gearvrf.GVRScene;
 import org.gearvrf.GVRSceneObject;
-import org.gearvrf.GVRMain;
 import org.gearvrf.GVRSpotLight;
 import org.gearvrf.GVRTexture;
 import org.gearvrf.GVRTransform;
 import org.gearvrf.scene_objects.GVRModelSceneObject;
 import org.joml.Quaternionf;
 
-import android.util.Log;
-import android.view.MotionEvent;
+import java.io.IOException;
 
 public class MultiLightMain extends GVRMain {
 
@@ -122,7 +123,8 @@ public class MultiLightMain extends GVRMain {
         GVRSceneObject lightNode = new GVRSceneObject(context);
         GVRSpotLight light = new GVRSpotLight(context);
         Quaternionf q = new Quaternionf();
-        
+        GVRDirectLight a = new GVRDirectLight(context);
+
         lightNode.attachLight(light);         
         lightNode.getTransform().setPosition(0, y, 3);
         light.setAmbientIntensity(0.3f * r, 0.3f * g, 0.3f * b, 1);

@@ -20,7 +20,6 @@ public class MainActivity extends GVRActivity implements VRTouchPadGestureDetect
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        main.onTouchEvent(event);
         touchPadGestureDetector.onTouchEvent(event);
         return super.onTouchEvent(event);
     }
