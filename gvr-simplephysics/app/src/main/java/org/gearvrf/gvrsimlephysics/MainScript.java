@@ -1,5 +1,7 @@
 package org.gearvrf.gvrsimlephysics;
 
+import android.graphics.Color;
+import android.view.Gravity;
 import android.view.MotionEvent;
 
 import org.gearvrf.FutureWrapper;
@@ -17,6 +19,7 @@ import org.gearvrf.GVRSceneObject;
 import org.gearvrf.GVRTexture;
 import org.gearvrf.physics.GVRRigidBody;
 import org.gearvrf.physics.GVRWorld;
+import org.gearvrf.scene_objects.GVRTextViewSceneObject;
 
 import java.io.IOException;
 import java.util.concurrent.Future;
@@ -36,31 +39,54 @@ public class MainScript extends GVRMain {
         scene.addSceneObject(createLight(getGVRContext()));
 
         mainCameraRig = scene.getMainCameraRig();
-        mainCameraRig.getLeftCamera().setBackgroundColor(245f,244f,214f,255f);
-        mainCameraRig.getRightCamera().setBackgroundColor(245f,244f,214f,255f);
+        mainCameraRig.getLeftCamera().setBackgroundColor(245f, 244f, 214f, 255f);
+        mainCameraRig.getRightCamera().setBackgroundColor(245f, 244f, 214f, 255f);
         mainCameraRig.getTransform().setPosition(0.0f, 6.0f, 20f);
 
-        addGroundMesh(scene, 0.0f, 0f, 0.0f, 0.0f);
+        addGroundMesh();
         addCylinderGroup();
         addGaze();
-
+        setTimer();
         scene.getRoot().attachComponent(new GVRWorld(gvrContext));
+
+
+    }
+
+
+    private void setTimer() {
+        GVRMesh mesh = gvrContext.createQuad(5.0f, 5.0f);
+        GVRTexture texture = gvrContext.loadTexture(new GVRAndroidResource(gvrContext, R.drawable.light_blue));
+        GVRSceneObject quadTimer = new GVRSceneObject(gvrContext, mesh, texture);
+        quadTimer.getTransform().setPosition(2.5f, 10f, 3.3f);
+        GVRTextViewSceneObject timeObject = new GVRTextViewSceneObject(gvrContext);
+        timeObject.setText("03:00");
+        timeObject.setTextColor(Color.BLACK);
+        timeObject.setGravity(Gravity.CENTER);
+        timeObject.setTextSize(20f);
+        timeObject.setRefreshFrequency(GVRTextViewSceneObject.IntervalFrequency.LOW);
+        timeObject.getTransform().setPosition(2.5f, 8f, 3.5f);
+        scene.addSceneObject(quadTimer);
+        scene.addSceneObject(timeObject);
+    }
+
+    private void invisibleGround(){
 
     }
 
     private void addCylinderGroup() throws IOException {
-        scene.addSceneObject(((setColorInObject(createCylinder(7f, .5f, 1.0f, CUBE_MASS), R.drawable.black, 0, 0, 0))));
-        scene.addSceneObject((setColorInObject(createCylinder(5f, .5f, 1.0f, CUBE_MASS), R.drawable.brown, .5f, .3f, .1f)));
-        scene.addSceneObject((setColorInObject(createCylinder(3f, .5f, 1.0f, CUBE_MASS), R.drawable.green, .1f, .5f, .3f)));
-        scene.addSceneObject((setColorInObject(createCylinder(7f, 1.8f, 1.0f, CUBE_MASS), R.drawable.grey, .6f, .6f, .6f)));
-        scene.addSceneObject((setColorInObject(createCylinder(4f, .5f, 2.5f, CUBE_MASS), R.drawable.orange, 1f, .5f, 0f)));
-        scene.addSceneObject((setColorInObject(createCylinder(-3f, .5f, 2.5f, CUBE_MASS), R.drawable.pink, 1f, 0f, .6f)));
-        scene.addSceneObject((setColorInObject(createCylinder(0.5f, .5f, 2f, CUBE_MASS), R.drawable.red, 1f, 0f, 0f)));
-        scene.addSceneObject((setColorInObject(createCylinder(2.5f, .5f, 3.5f, CUBE_MASS), R.drawable.yellow, 1f, .8f, 0f)));
-        scene.addSceneObject((setColorInObject(createCylinder(2.5f, 1.8f, 3.3f, CUBE_MASS), R.drawable.light_blue, .4f, .2f, .9f)));
-        scene.addSceneObject((setColorInObject(createCylinder(3.0f, .5f, 5.5f, CUBE_MASS), R.drawable.light_green, .5f, 1f, .7f)));
-        scene.addSceneObject((setColorInObject(createCylinder(-5f, 5f, -1.5f, CUBE_MASS), R.drawable.dark_blue, 0f, 0f, .6f)));
-        scene.addSceneObject((setColorInObject(createCylinder(5.5f, 15f, 7f, CUBE_MASS), R.drawable.cy, .2f, .8f, .7f)));
+
+        scene.addSceneObject(createCylinder(7f, .5f, 1.0f, CUBE_MASS, R.drawable.black));
+        scene.addSceneObject(createCylinder(5f, .5f, 1.0f, CUBE_MASS, R.drawable.brown));
+        scene.addSceneObject(createCylinder(3f, .5f, 1.0f, CUBE_MASS, R.drawable.green));
+        scene.addSceneObject(createCylinder(7f, 1.8f, 1.0f, CUBE_MASS, R.drawable.grey));
+        scene.addSceneObject(createCylinder(4f, .5f, 2.5f, CUBE_MASS, R.drawable.orange));
+        scene.addSceneObject(createCylinder(-3f, .5f, 2.5f, CUBE_MASS, R.drawable.pink));
+        scene.addSceneObject(createCylinder(0.5f, .5f, 2f, CUBE_MASS, R.drawable.red));
+        scene.addSceneObject(createCylinder(2.5f, .5f, 3.5f, CUBE_MASS, R.drawable.yellow));
+        scene.addSceneObject(createCylinder(2.5f, 1.8f, 3.3f, CUBE_MASS, R.drawable.light_blue));
+        scene.addSceneObject(createCylinder(3.0f, .5f, 5.5f, CUBE_MASS, R.drawable.light_green));
+        scene.addSceneObject(createCylinder(-5f, 5f, -1.5f, CUBE_MASS, R.drawable.dark_blue));
+        scene.addSceneObject(createCylinder(5.5f, 15f, 7f, CUBE_MASS, R.drawable.cy));
     }
 
     private Ball createBall(float x, float y, float z) throws IOException {
@@ -72,9 +98,9 @@ public class MainScript extends GVRMain {
 
     }
 
-    private GVRSceneObject createCylinder(float x, float y, float z, float mass) throws IOException {
-        GVRSceneObject cubeObject = new GVRSceneObject(gvrContext, new GVRAndroidResource(gvrContext, "cyl.fbx"),
-                new GVRAndroidResource(gvrContext, R.drawable.orange));
+    private GVRSceneObject createCylinder(float x, float y, float z, float mass, int drawable) throws IOException {
+        GVRSceneObject cubeObject = new GVRSceneObject(gvrContext, new GVRAndroidResource(gvrContext, "cylinder.fbx"),
+                new GVRAndroidResource(gvrContext, drawable));
         cubeObject.getTransform().setPosition(x, y, z);
         cubeObject.getTransform().setRotationByAxis(90.0f, 1.0f, 0.0f, 0.0f);
 
@@ -90,7 +116,6 @@ public class MainScript extends GVRMain {
         body.setFriction(5.0f);
         cubeObject.attachComponent(body);
 
-
         return cubeObject;
     }
 
@@ -101,7 +126,7 @@ public class MainScript extends GVRMain {
         light.setAmbientIntensity(0.3f * 1, 0.3f * 1, 0, 1);
         light.setDiffuseIntensity(1, .9f, .8f, 1);
         light.setSpecularIntensity(1, .9f, .8f, 1);
-        lightNode.getTransform().setPosition(0, 9f, 0);
+        lightNode.getTransform().setPosition(0, 9f, 1);
         lightNode.getTransform().setRotationByAxis(-90, 1, 0, 0);
         lightNode.attachLight(light);
         return lightNode;
@@ -121,7 +146,7 @@ public class MainScript extends GVRMain {
 
     }
 
-    private void addGroundMesh(GVRScene scene, float x, float y, float z, float mass) {
+    private void addGroundMesh() {
 
         GVRMesh mesh = gvrContext.createQuad(30.0f, 30.0f);
         Future<GVRTexture> texture = gvrContext.loadFutureTexture(new GVRAndroidResource(gvrContext, R.drawable.orange));
@@ -129,10 +154,10 @@ public class MainScript extends GVRMain {
         GVRSceneObject groundObject = new GVRSceneObject(gvrContext, mesh);
         groundObject.getRenderData().setMaterial(material);
         groundObject.getRenderData().getMaterial().setTexture("diffuseTexture", texture);
-        groundObject.getTransform().setPosition(x, y, z);
+        groundObject.getTransform().setPosition(0.0f, 0f, 0.0f);
         groundObject.getTransform().setRotationByAxis(-90.0f, 1.0f, 0.0f, 0.0f);
 
-        //set Light
+        //set phong Shader
         groundObject.getRenderData().setShaderTemplate(GVRPhongShader.class);
 
 
@@ -153,7 +178,6 @@ public class MainScript extends GVRMain {
 
     }
 
-
     public void onSwipe(MotionEvent e, VRTouchPadGestureDetector.SwipeDirection swipeDirection, float velocityX, float velocityY) {
 
         if (swipeDirection == VRTouchPadGestureDetector.SwipeDirection.Up) {
@@ -169,21 +193,5 @@ public class MainScript extends GVRMain {
                 e1.getMessage();
             }
         }
-    }
-
-    private GVRSceneObject setColorInObject(GVRSceneObject object, int drawableColor, float r, float g, float b) {
-        GVRMaterial material = new GVRMaterial(gvrContext);
-        Future<GVRTexture> texture = gvrContext.loadFutureTexture(new GVRAndroidResource(gvrContext, drawableColor));
-//        material.setVec4("diffuse_color", r, g, b, 1.0f);
-//        material.setVec4("ambient_color", r, g, b, 1.0f);
-//        material.setVec4("specular_color", r, g, b, 1.0f);
-//        material.setVec4("emissive_color", 0.0f, 0.0f, 0.0f, 0.0f);
-//        material.setFloat("specular_exponent", 10.0f);
-//        material.setTexture("diffuseTexture", texture);
-        material.setMainTexture(texture);
-
-        object.getRenderData().setMaterial(material);
-//        object.getRenderData().setShaderTemplate(GVRPhongShader.class);
-        return object;
     }
 }
