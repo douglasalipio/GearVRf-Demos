@@ -15,6 +15,7 @@ import org.gearvrf.GVRScene;
 import org.gearvrf.GVRSceneObject;
 import org.gearvrf.GVRSphereCollider;
 import org.gearvrf.GVRTexture;
+import org.gearvrf.physics.GVRCollisionType;
 import org.gearvrf.physics.GVRRigidBody;
 import org.gearvrf.physics.GVRWorld;
 import org.gearvrf.physics.ICollisionEvents;
@@ -22,6 +23,34 @@ import org.gearvrf.physics.ICollisionEvents;
 import java.io.IOException;
 
 public class BulletSampleMain extends GVRMain {
+
+    public static GVRCollisionType COL_NOTHING;
+    public static GVRCollisionType COL_BOX;
+    public static GVRCollisionType COL_BOX_2;
+    public static GVRCollisionType COL_BALL;
+    public static GVRCollisionType COL_GROUND;
+
+    static {
+        COL_NOTHING  = new GVRCollisionType(0);
+        COL_BOX      = new GVRCollisionType(1);
+        COL_BALL     = new GVRCollisionType(2);
+        COL_GROUND   = new GVRCollisionType(3);
+        COL_BOX_2    = new GVRCollisionType(4);
+
+        COL_BOX.colideWith(COL_GROUND);
+        COL_BOX.colideWith(COL_BALL);
+
+        COL_BOX_2.colideWith(COL_GROUND);
+        COL_BOX_2.colideWith(COL_BOX);
+        COL_BOX_2.colideNotWith(COL_BOX_2);
+
+        COL_BALL.colideWith(COL_GROUND);
+        COL_BALL.colideWith(COL_BOX);
+
+        COL_GROUND.colideWith(COL_BALL);
+        COL_GROUND.colideWith(COL_BOX);
+        COL_GROUND.colideWith(COL_BOX_2);
+    }
 
     public class CollisionHandler implements ICollisionEvents {
         private GVRTexture blueObject;
@@ -76,35 +105,35 @@ public class BulletSampleMain extends GVRMain {
         /*
          * Create Some cubes in Bull'et world and hit it with a sphere
          */
-        addCube(scene, 0.0f, 1.0f, -9.0f, CUBE_MASS);
-        addCube(scene, 0.0f, 1.0f, -10.0f, CUBE_MASS);
-        addCube(scene, 0.0f, 1.0f, -11.0f, CUBE_MASS);
+        addCube_C(scene, 0.0f, 1.0f, -9.0f, CUBE_MASS);
+        addCube_C(scene, 0.0f, 1.0f, -10.0f, CUBE_MASS);
+        addCube_C(scene, 0.0f, 1.0f, -11.0f, CUBE_MASS);
         addCube(scene, 1.0f, 1.0f, -9.0f, CUBE_MASS);
         addCube(scene, 1.0f, 1.0f, -10.0f, CUBE_MASS);
         addCube(scene, 1.0f, 1.0f, -11.0f, CUBE_MASS);
-        addCube(scene, 2.0f, 1.0f, -9.0f, CUBE_MASS);
-        addCube(scene, 2.0f, 1.0f, -10.0f, CUBE_MASS);
-        addCube(scene, 2.0f, 1.0f, -11.0f, CUBE_MASS);
+        addCube_C(scene, 2.0f, 1.0f, -9.0f, CUBE_MASS);
+        addCube_C(scene, 2.0f, 1.0f, -10.0f, CUBE_MASS);
+        addCube_C(scene, 2.0f, 1.0f, -11.0f, CUBE_MASS);
 
-        addCube(scene, 0.0f, 2.0f, -9.0f, CUBE_MASS);
-        addCube(scene, 0.0f, 2.0f, -10.0f, CUBE_MASS);
-        addCube(scene, 0.0f, 2.0f, -11.0f, CUBE_MASS);
+        addCube_C(scene, 0.0f, 2.0f, -9.0f, CUBE_MASS);
+        addCube_C(scene, 0.0f, 2.0f, -10.0f, CUBE_MASS);
+        addCube_C(scene, 0.0f, 2.0f, -11.0f, CUBE_MASS);
         addCube(scene, 1.0f, 2.0f, -9.0f, CUBE_MASS);
         addCube(scene, 1.0f, 2.0f, -10.0f, CUBE_MASS);
         addCube(scene, 1.0f, 2.0f, -11.0f, CUBE_MASS);
-        addCube(scene, 2.0f, 2.0f, -9.0f, CUBE_MASS);
-        addCube(scene, 2.0f, 2.0f, -10.0f, CUBE_MASS);
-        addCube(scene, 2.0f, 2.0f, -11.0f, CUBE_MASS);
+        addCube_C(scene, 2.0f, 2.0f, -9.0f, CUBE_MASS);
+        addCube_C(scene, 2.0f, 2.0f, -10.0f, CUBE_MASS);
+        addCube_C(scene, 2.0f, 2.0f, -11.0f, CUBE_MASS);
 
-        addCube(scene, 0.0f, 3.0f, -9.0f, CUBE_MASS);
-        addCube(scene, 0.0f, 3.0f, -10.0f, CUBE_MASS);
-        addCube(scene, 0.0f, 3.0f, -11.0f, CUBE_MASS);
+        addCube_C(scene, 0.0f, 3.0f, -9.0f, CUBE_MASS);
+        addCube_C(scene, 0.0f, 3.0f, -10.0f, CUBE_MASS);
+        addCube_C(scene, 0.0f, 3.0f, -11.0f, CUBE_MASS);
         addCube(scene, 1.0f, 3.0f, -9.0f, CUBE_MASS);
         addCube(scene, 1.0f, 3.0f, -10.0f, CUBE_MASS);
         addCube(scene, 1.0f, 3.0f, -11.0f, CUBE_MASS);
-        addCube(scene, 2.0f, 3.0f, -9.0f, CUBE_MASS);
-        addCube(scene, 2.0f, 3.0f, -10.0f, CUBE_MASS);
-        addCube(scene, 2.0f, 3.0f, -11.0f, CUBE_MASS);
+        addCube_C(scene, 2.0f, 3.0f, -9.0f, CUBE_MASS);
+        addCube_C(scene, 2.0f, 3.0f, -10.0f, CUBE_MASS);
+        addCube_C(scene, 2.0f, 3.0f, -11.0f, CUBE_MASS);
 
         /*
          * Throw a sphere from top
@@ -208,6 +237,7 @@ public class BulletSampleMain extends GVRMain {
             // Physics body
             GVRRigidBody body = new GVRRigidBody(mGVRContext);
 
+            body.setCollisionType(COL_GROUND);
             body.setRestitution(0.5f);
             body.setFriction(1.0f);
 
@@ -236,6 +266,34 @@ public class BulletSampleMain extends GVRMain {
         // Physics body
         GVRRigidBody body = new GVRRigidBody(mGVRContext);
 
+        body.setCollisionType(COL_BOX_2);
+        body.setMass(mass);
+        body.setRestitution(0.5f);
+        body.setFriction(1.0f);
+
+        cubeObject.attachComponent(body);
+
+        scene.addSceneObject(cubeObject);
+    }
+
+    /*
+     * Function to add a cube of unit size with mass at the specified position
+     * in Bullet physics world and scene graph. Colliding w/ ball
+     */
+    private void addCube_C(GVRScene scene, float x, float y, float z, float mass) {
+
+        GVRSceneObject cubeObject = meshWithTexture("cube.obj", "cube.jpg");
+        cubeObject.getTransform().setPosition(x, y, z);
+
+        // Collider
+        GVRBoxCollider boxCollider = new GVRBoxCollider(mGVRContext);
+        boxCollider.setHalfExtents(0.5f, 0.5f, 0.5f);
+        cubeObject.attachCollider(boxCollider);
+
+        // Physics body
+        GVRRigidBody body = new GVRRigidBody(mGVRContext);
+
+        body.setCollisionType(COL_BOX);
         body.setMass(mass);
         body.setRestitution(0.5f);
         body.setFriction(1.0f);
@@ -264,7 +322,7 @@ public class BulletSampleMain extends GVRMain {
         // Physics body
         mSphereRigidBody = new GVRRigidBody(mGVRContext);
 
-        mSphereRigidBody.setEnable(false);
+        mSphereRigidBody.setCollisionType(COL_BALL);
         mSphereRigidBody.setMass(mass);
         mSphereRigidBody.setRestitution(1.5f);
         mSphereRigidBody.setFriction(0.5f);
