@@ -8,6 +8,9 @@ import org.gearvrf.GVRSceneObject;
 import org.gearvrf.GVRSphereCollider;
 import org.gearvrf.physics.GVRRigidBody;
 
+import static org.gearvrf.gvrsimlephysics.MainScript.BALL_ID;
+
+
 /**
  * Created by d.alipio@samsung.com on 10/20/16.
  */
@@ -32,6 +35,7 @@ public class Ball extends GVRSceneObject {
         rigidBody.setRestitution(1.5f);
         rigidBody.setFriction(0.5f);
         rigidBody.setEnable(true);
+        rigidBody.setCollisionType(BALL_ID);
         attachComponent(rigidBody);
     }
 
