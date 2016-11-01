@@ -1,6 +1,7 @@
 package org.gearvrf.gvrsimlephysics;
 
 import android.graphics.Color;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 
@@ -33,8 +34,10 @@ public class MainScript extends GVRMain {
     private GVRContext gvrContext = null;
     private GVRScene scene;
     private GVRCameraRig mainCameraRig;
-    private static final float CUBE_MASS = 0.5f;
-
+    private static final float CUBE_MASS = 0.3f;
+    private static final int SWIPE_MIN_DISTANCE = 120;
+    private static final int SWIPE_MAX_OFF_PATH = 250;
+    private static final int SWIPE_THRESHOLD_VELOCITY = 200;
 
     public static GVRCollisionType GROUND_ID;
     public static GVRCollisionType CYLINDER_ID;
@@ -251,10 +254,15 @@ public class MainScript extends GVRMain {
 
     }
 
-    public void onSwipe(MotionEvent e, VRTouchPadGestureDetector.SwipeDirection swipeDirection, float velocityX, float velocityY) {
+    public void onSwipe(MotionEvent event, VRTouchPadGestureDetector.SwipeDirection swipeDirection, float velocityX, float velocityY) {
 
-        if (swipeDirection == VRTouchPadGestureDetector.SwipeDirection.Up) {
+        if (swipeDirection == VRTouchPadGestureDetector.SwipeDirection.Forward) {
+
             Ball ball = null;
+            int maxDuration = 2;
+            float test = Math.abs(velocityX) * maxDuration / 1000f;
+            Log.d("douglas", "velocity y = " + test);
+
             try {
                 ball = createBall(mainCameraRig.getTransform().getPositionX(),
                         mainCameraRig.getTransform().getPositionY(), mainCameraRig.getTransform().getPositionZ());
