@@ -45,18 +45,22 @@ public class MainScript extends GVRMain {
     public static GVRCollisionType INVISIBLE_GROUND_ID;
 
     static {
-        GROUND_ID = new GVRCollisionType(1);
-        CYLINDER_ID = new GVRCollisionType(2);
-        BALL_ID = new GVRCollisionType(3);
-        INVISIBLE_GROUND_ID = new GVRCollisionType(4);
+        GROUND_ID = new GVRCollisionType((short) 1);
+        CYLINDER_ID = new GVRCollisionType((short) 2);
+        BALL_ID = new GVRCollisionType((short) 3);
+        INVISIBLE_GROUND_ID = new GVRCollisionType((short) 4);
 
         BALL_ID.colideWith(CYLINDER_ID);
         BALL_ID.colideWith(GROUND_ID);
+
         GROUND_ID.colideWith(BALL_ID);
+        GROUND_ID.colideWith(CYLINDER_ID);
+
         CYLINDER_ID.colideWith(BALL_ID);
         CYLINDER_ID.colideWith(INVISIBLE_GROUND_ID);
         CYLINDER_ID.colideWith(GROUND_ID);
-        GROUND_ID.colideWith(CYLINDER_ID);
+        CYLINDER_ID.colideWith(CYLINDER_ID);
+
     }
 
     @Override
