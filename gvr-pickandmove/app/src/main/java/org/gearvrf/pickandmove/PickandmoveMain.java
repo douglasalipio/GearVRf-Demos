@@ -15,51 +15,50 @@
 
 package org.gearvrf.pickandmove;
 
+import android.util.Log;
+import android.view.MotionEvent;
+
+import org.gearvrf.FutureWrapper;
+import org.gearvrf.GVRAndroidResource;
+import org.gearvrf.GVRContext;
+import org.gearvrf.GVRMain;
+import org.gearvrf.GVRMaterial;
+import org.gearvrf.GVRMesh;
+import org.gearvrf.GVRPicker;
+import org.gearvrf.GVRScene;
+import org.gearvrf.GVRSceneObject;
+import org.gearvrf.GVRSphereCollider;
+import org.gearvrf.GVRTexture;
+import org.gearvrf.GVRTransform;
+import org.gearvrf.IPickEvents;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Future;
 
-import org.gearvrf.FutureWrapper;
-import org.gearvrf.GVRAndroidResource;
-import org.gearvrf.GVRCameraRig;
-import org.gearvrf.GVRContext;
-import org.gearvrf.GVRMaterial;
-import org.gearvrf.GVRMesh;
-import org.gearvrf.GVRSphereCollider;
-import org.gearvrf.GVRPicker;
-import org.gearvrf.GVRScene;
-import org.gearvrf.GVRSceneObject;
-import org.gearvrf.GVRMain;
-import org.gearvrf.GVRTexture;
-import org.gearvrf.GVRTransform;
-import org.gearvrf.GVRPicker.GVRPickedObject;
-import org.gearvrf.IPickEvents;
-import org.gearvrf.pickandmove.R;
-
-import android.util.Log;
-import android.view.MotionEvent;
-
 public class PickandmoveMain extends GVRMain {
 
-    public class PickHandler implements IPickEvents
-    {
-        public void onEnter(GVRSceneObject sceneObj, GVRPicker.GVRPickedObject pickInfo)
-        {
+    public class PickHandler implements IPickEvents {
+        public void onEnter(GVRSceneObject sceneObj, GVRPicker.GVRPickedObject pickInfo) {
             sceneObj.getRenderData().getMaterial().setColor(LOOKAT_COLOR_MASK_R, LOOKAT_COLOR_MASK_G, LOOKAT_COLOR_MASK_B);
             mPickedObject = sceneObj;
         }
-        public void onExit(GVRSceneObject sceneObj)
-        {
+
+        public void onExit(GVRSceneObject sceneObj) {
             sceneObj.getRenderData().getMaterial().setColor(1.0f, 1.0f, 1.0f);
         }
-        public void onNoPick(GVRPicker picker)
-        {
-        	mPickedObject = null;
+
+        public void onNoPick(GVRPicker picker) {
+            mPickedObject = null;
         }
-        public void onPick(GVRPicker picker) { }
-        public void onInside(GVRSceneObject sceneObj, GVRPicker.GVRPickedObject pickInfo) { }      
+
+        public void onPick(GVRPicker picker) {
+        }
+
+        public void onInside(GVRSceneObject sceneObj, GVRPicker.GVRPickedObject pickInfo) {
+        }
     }
-    
+
     private static final float CUBE_WIDTH = 200.0f;
     private static final float OBJECT_POSITION = 5.0f;
     private static final float SCALE_FACTOR = 2.0f;
@@ -68,8 +67,8 @@ public class PickandmoveMain extends GVRMain {
     private List<GVRSceneObject> mObjects = new ArrayList<GVRSceneObject>();
     private IPickEvents mPickHandler;
     private GVRSceneObject mPickedObject = null;
-    private GVRPicker   mPicker;
-    
+    private GVRPicker mPicker;
+
     @Override
     public void onInit(GVRContext gvrContext) {
         mGVRContext = gvrContext;
@@ -196,66 +195,67 @@ public class PickandmoveMain extends GVRMain {
 
     public void onTouchEvent(MotionEvent event) {
         switch (event.getAction() & MotionEvent.ACTION_MASK) {
-        case MotionEvent.ACTION_DOWN:
-            lastX = event.getX();
-            lastY = event.getY();
-            isOnClick = true;
-            break;
-        case MotionEvent.ACTION_CANCEL:
-        case MotionEvent.ACTION_UP:
-            if (isOnClick) {
-            	if (attachedObject != null) {
-                	mScene.getMainCameraRig().removeChildObject(attachedObject);
-                    mScene.addSceneObject(attachedObject);
+            case MotionEvent.ACTION_DOWN:
+                lastX = event.getX();
+                lastY = event.getY();
+                isOnClick = true;
+                break;
+            case MotionEvent.ACTION_CANCEL:
+            case MotionEvent.ACTION_UP:
+                if (isOnClick) {
+                    if (attachedObject != null) {
+                        mScene.getMainCameraRig().removeChildObject(attachedObject);
+                        mScene.addSceneObject(attachedObject);
 
-                    mScene.getEventReceiver().addListener(mPickHandler);
-                    attachedObject.getRenderData().getMaterial().setColor(
-        					LOOKAT_COLOR_MASK_R,
-        					LOOKAT_COLOR_MASK_G,
-        					LOOKAT_COLOR_MASK_B);
-                    attachedObject = null;            		
-            	}
-            	else if (mPickedObject != null) {
-                    mScene.getEventReceiver().removeListener(mPickHandler);
-                    mScene.removeSceneObject(mPickedObject);
+                        mScene.getEventReceiver().addListener(mPickHandler);
+                        attachedObject.getRenderData().getMaterial().setColor(
+                                LOOKAT_COLOR_MASK_R,
+                                LOOKAT_COLOR_MASK_G,
+                                LOOKAT_COLOR_MASK_B);
+                        attachedObject = null;
+                    } else if (mPickedObject != null) {
+                        mScene.getEventReceiver().removeListener(mPickHandler);
+                        mScene.removeSceneObject(mPickedObject);
 
-                    attachedObject = mPickedObject;
-                    mScene.getMainCameraRig().addChildObject(attachedObject);
-                    attachedObject.getRenderData().getMaterial().setColor(
-                    					PICKED_COLOR_MASK_R,
-                                        PICKED_COLOR_MASK_G,
-                                        PICKED_COLOR_MASK_B);
-                }
-            }
-         break;
-        case MotionEvent.ACTION_MOVE:
-            float currentX = event.getX();
-            float currentY = event.getY();
-            float dx = currentX - lastX;
-            float dy = currentY - lastY;
-            float distance = dx * dx + dy * dy;
-            if (Math.abs(distance) > MOVE_THRESHOLD) {
-                if (attachedObject != null) {
-                    lastX = currentX;
-                    lastY = currentY;
-                    distance *= MOVE_SCALE_FACTOR;
-                    if (dy < 0) {
-                        distance = -distance;
-                    }
-                    GVRTransform transform = attachedObject.getTransform();
-                    transform.translate(0.0f, 0.0f, distance);
-                    if (transform.getPositionZ() < MIN_POSSIBLE_Z) {
-                        transform.setPositionZ(MIN_POSSIBLE_Z);
-                    }
-                    if (transform.getPositionZ() > MAX_POSSIBLE_Z) {
-                        transform.setPositionZ(MAX_POSSIBLE_Z);
+                        attachedObject = mPickedObject;
+                        mScene.getMainCameraRig().addChildObject(attachedObject);
+                        attachedObject.getRenderData().getMaterial().setColor(
+                                PICKED_COLOR_MASK_R,
+                                PICKED_COLOR_MASK_G,
+                                PICKED_COLOR_MASK_B);
                     }
                 }
-                isOnClick = false;
-            }
-            break;
-        default:
-            break;
+                break;
+            case MotionEvent.ACTION_MOVE:
+                float currentX = event.getX();
+                float currentY = event.getY();
+                float dx = currentX - lastX;
+                float dy = currentY - lastY;
+                float distance = dx * dx + dy * dy;
+
+                Log.d("douglas", "" + distance);
+                if (Math.abs(distance) > MOVE_THRESHOLD) {
+                    if (attachedObject != null) {
+                        lastX = currentX;
+                        lastY = currentY;
+                        distance *= MOVE_SCALE_FACTOR;
+                        if (dy < 0) {
+                            distance = -distance;
+                        }
+                        GVRTransform transform = attachedObject.getTransform();
+                        transform.translate(0.0f, 0.0f, distance);
+                        if (transform.getPositionZ() < MIN_POSSIBLE_Z) {
+                            transform.setPositionZ(MIN_POSSIBLE_Z);
+                        }
+                        if (transform.getPositionZ() > MAX_POSSIBLE_Z) {
+                            transform.setPositionZ(MAX_POSSIBLE_Z);
+                        }
+                    }
+                    isOnClick = false;
+                }
+                break;
+            default:
+                break;
         }
     }
 

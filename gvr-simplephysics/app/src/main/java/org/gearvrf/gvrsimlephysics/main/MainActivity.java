@@ -1,9 +1,10 @@
-package org.gearvrf.gvrsimlephysics;
+package org.gearvrf.gvrsimlephysics.main;
 
 import android.os.Bundle;
 import android.view.MotionEvent;
 
 import org.gearvrf.GVRActivity;
+import org.gearvrf.gvrsimlephysics.util.VRTouchPadGestureDetector;
 
 public class MainActivity extends GVRActivity implements VRTouchPadGestureDetector.OnTouchPadGestureListener {
 
@@ -36,7 +37,7 @@ public class MainActivity extends GVRActivity implements VRTouchPadGestureDetect
 
     @Override
     public boolean onSwipe(MotionEvent e, VRTouchPadGestureDetector.SwipeDirection swipeDirection, float velocityX, float velocityY) {
-        main.onSwipe( e,  swipeDirection,  velocityX, velocityY);
-        return false;
+        main.onSwipe(swipeDirection, velocityX);
+        return super.onTouchEvent(e);
     }
 }

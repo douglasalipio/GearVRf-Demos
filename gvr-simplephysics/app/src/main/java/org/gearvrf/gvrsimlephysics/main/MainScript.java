@@ -1,9 +1,7 @@
-package org.gearvrf.gvrsimlephysics;
+package org.gearvrf.gvrsimlephysics.main;
 
 import android.graphics.Color;
-import android.util.Log;
 import android.view.Gravity;
-import android.view.MotionEvent;
 
 import org.gearvrf.FutureWrapper;
 import org.gearvrf.GVRAndroidResource;
@@ -18,12 +16,21 @@ import org.gearvrf.GVRPhongShader;
 import org.gearvrf.GVRScene;
 import org.gearvrf.GVRSceneObject;
 import org.gearvrf.GVRTexture;
+import org.gearvrf.gvrsimlephysics.R;
+import org.gearvrf.gvrsimlephysics.entity.Ball;
+import org.gearvrf.gvrsimlephysics.util.MathUtils;
+import org.gearvrf.gvrsimlephysics.util.VRTouchPadGestureDetector;
 import org.gearvrf.physics.GVRRigidBody;
 import org.gearvrf.physics.GVRWorld;
+import org.gearvrf.physics.ICollisionEvents;
 import org.gearvrf.scene_objects.GVRTextViewSceneObject;
 
 import java.io.IOException;
 import java.util.concurrent.Future;
+
+import static org.gearvrf.gvrsimlephysics.entity.CollisionFilter.CYLINDER_ID;
+import static org.gearvrf.gvrsimlephysics.entity.CollisionFilter.GROUND_ID;
+import static org.gearvrf.gvrsimlephysics.entity.CollisionFilter.INVISIBLE_GROUND_ID;
 
 public class MainScript extends GVRMain {
 
@@ -31,9 +38,7 @@ public class MainScript extends GVRMain {
     private GVRScene scene;
     private GVRCameraRig mainCameraRig;
     private static final float CUBE_MASS = 0.3f;
-    private static final int SWIPE_MIN_DISTANCE = 120;
-    private static final int SWIPE_MAX_OFF_PATH = 250;
-    private static final int SWIPE_THRESHOLD_VELOCITY = 200;
+
 
     @Override
     public void onInit(GVRContext gvrContext) throws Throwable {
@@ -46,15 +51,63 @@ public class MainScript extends GVRMain {
         mainCameraRig.getRightCamera().setBackgroundColor(245f, 244f, 214f, 255f);
         mainCameraRig.getTransform().setPosition(0.0f, 6.0f, 20f);
 
+        addInvisibleGround();
         addGroundMesh();
         addCylinderGroup();
         addGaze();
         setTimer();
+
         scene.getRoot().attachComponent(new GVRWorld(gvrContext));
+        scene.getEventReceiver().addListener(this);
 
 
     }
 
+    private void addInvisibleGround() {
+
+        GVRMesh mesh = gvrContext.createQuad(300.0f, 300.0f);
+        Future<GVRTexture> texture = gvrContext.loadFutureTexture(new GVRAndroidResource(gvrContext, R.drawable.empty));
+        GVRMaterial material = new GVRMaterial(gvrContext);
+        GVRSceneObject groundObject = new GVRSceneObject(gvrContext, mesh);
+        groundObject.getRenderData().setMaterial(material);
+        groundObject.getRenderData().getMaterial().setTexture("diffuseTexture", texture);
+        groundObject.getTransform().setPosition(0.0f, -1f, 0.0f);
+        groundObject.getTransform().setRotationByAxis(-90.0f, 1.0f, 0.0f, 0.0f);
+        groundObject.getEventReceiver().addListener(new ICollisionEvents() {
+            @Override
+            public void onEnter(GVRSceneObject gvrSceneObject, GVRSceneObject gvrSceneObject1, float[] floats, float v) {
+
+                if (gvrSceneObject.getName().equals("cylinder")) {
+
+                    gvrSceneObject.setEnable(false);
+                    GVRRigidBody rigidBody = (GVRRigidBody) gvrSceneObject.getComponent(GVRRigidBody.getComponentType());
+                    rigidBody.getCollisionType().colideNotWith(INVISIBLE_GROUND_ID);
+                    gvrSceneObject.setEnable(true);
+                }
+            }
+
+            @Override
+            public void onExit(GVRSceneObject gvrSceneObject, GVRSceneObject gvrSceneObject1, float[] floats, float v) {
+
+            }
+        });
+
+        //set phong Shader
+        groundObject.getRenderData().setShaderTemplate(GVRPhongShader.class);
+
+
+        // Collider
+        GVRMeshCollider meshCollider = new GVRMeshCollider(gvrContext, mesh);
+        groundObject.attachCollider(meshCollider);
+
+        // Physics body
+        GVRRigidBody body = new GVRRigidBody(gvrContext);
+        body.setRestitution(0.5f);
+        body.setFriction(1.0f);
+        body.setCollisionType(INVISIBLE_GROUND_ID);
+        groundObject.attachComponent(body);
+        scene.addSceneObject(groundObject);
+    }
 
     private void setTimer() {
         GVRMesh mesh = gvrContext.createQuad(5.0f, 5.0f);
@@ -70,10 +123,6 @@ public class MainScript extends GVRMain {
         timeObject.getTransform().setPosition(2.5f, 8f, 3.5f);
         scene.addSceneObject(quadTimer);
         scene.addSceneObject(timeObject);
-    }
-
-    private void invisibleGround() {
-
     }
 
     private void addCylinderGroup() throws IOException {
@@ -115,6 +164,7 @@ public class MainScript extends GVRMain {
         // Physics body
         GVRRigidBody body = new GVRRigidBody(gvrContext);
         body.setMass(mass);
+        body.setCollisionType(CYLINDER_ID);
         body.setRestitution(0.5f);
         body.setFriction(5.0f);
         cubeObject.attachComponent(body);
@@ -171,9 +221,29 @@ public class MainScript extends GVRMain {
         // Physics body
         GVRRigidBody body = new GVRRigidBody(gvrContext);
         body.setRestitution(0.5f);
+        body.setCollisionType(GROUND_ID);
         body.setFriction(1.0f);
         groundObject.attachComponent(body);
         scene.addSceneObject(groundObject);
+    }
+
+    public void onSwipe(VRTouchPadGestureDetector.SwipeDirection swipeDirection, float velocityX) {
+
+        if (swipeDirection == VRTouchPadGestureDetector.SwipeDirection.Forward) {
+            try {
+
+                int force = MathUtils.calculateForce(velocityX);
+                float[] vector = MathUtils.calculateRotation(mainCameraRig.getHeadTransform()
+                        .getRotationPitch(), mainCameraRig.getHeadTransform().getRotationYaw());
+                Ball ball = createBall(mainCameraRig.getTransform().getPositionX(),
+                        mainCameraRig.getTransform().getPositionY(), mainCameraRig.getTransform().getPositionZ());
+                ball.setPhysic();
+                ball.getRigidBody().applyCentralForce(vector[0] * force, vector[1] * force, vector[2] * force);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
@@ -181,25 +251,4 @@ public class MainScript extends GVRMain {
 
     }
 
-    public void onSwipe(MotionEvent event, VRTouchPadGestureDetector.SwipeDirection swipeDirection, float velocityX, float velocityY) {
-
-        if (swipeDirection == VRTouchPadGestureDetector.SwipeDirection.Forward) {
-
-            Ball ball = null;
-            int maxDuration = 2;
-            float test = Math.abs(velocityX) * maxDuration / 1000f;
-            Log.d("douglas", "velocity y = " + test);
-
-            try {
-                ball = createBall(mainCameraRig.getTransform().getPositionX(),
-                        mainCameraRig.getTransform().getPositionY(), mainCameraRig.getTransform().getPositionZ());
-                ball.setPhysic();
-                ball.getRigidBody().applyCentralForce(mainCameraRig.getHeadTransformObject().getTransform().getRotationY() * -2000,
-                        mainCameraRig.getHeadTransformObject().getTransform().getRotationX() * 2000,
-                        -1000);
-            } catch (IOException e1) {
-                e1.getMessage();
-            }
-        }
-    }
 }

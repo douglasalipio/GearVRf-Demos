@@ -1,4 +1,4 @@
-package org.gearvrf.gvrsimlephysics;
+package org.gearvrf.gvrsimlephysics.entity;
 
 import org.gearvrf.GVRAndroidResource;
 import org.gearvrf.GVRContext;
@@ -7,6 +7,7 @@ import org.gearvrf.GVRPhongShader;
 import org.gearvrf.GVRSceneObject;
 import org.gearvrf.GVRSphereCollider;
 import org.gearvrf.physics.GVRRigidBody;
+
 
 /**
  * Created by d.alipio@samsung.com on 10/20/16.
@@ -32,6 +33,7 @@ public class Ball extends GVRSceneObject {
         rigidBody.setRestitution(1.5f);
         rigidBody.setFriction(0.5f);
         rigidBody.setEnable(true);
+        rigidBody.setCollisionType(CollisionFilter.BALL_ID);
         attachComponent(rigidBody);
     }
 

@@ -14,7 +14,7 @@
  */
 
 
-package org.gearvrf.gvrsimlephysics;
+package org.gearvrf.gvrsimlephysics.shader;
 
 import org.gearvrf.GVRContext;
 import org.gearvrf.GVRShaderTemplate;
