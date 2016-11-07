@@ -1,7 +1,6 @@
 package org.gearvrf.gvrsimlephysics.main;
 
-import android.graphics.Color;
-import android.view.Gravity;
+import android.util.Log;
 
 import org.gearvrf.FutureWrapper;
 import org.gearvrf.GVRAndroidResource;
@@ -18,12 +17,12 @@ import org.gearvrf.GVRSceneObject;
 import org.gearvrf.GVRTexture;
 import org.gearvrf.gvrsimlephysics.R;
 import org.gearvrf.gvrsimlephysics.entity.Ball;
+import org.gearvrf.gvrsimlephysics.entity.Countdown;
 import org.gearvrf.gvrsimlephysics.util.MathUtils;
 import org.gearvrf.gvrsimlephysics.util.VRTouchPadGestureDetector;
 import org.gearvrf.physics.GVRRigidBody;
 import org.gearvrf.physics.GVRWorld;
 import org.gearvrf.physics.ICollisionEvents;
-import org.gearvrf.scene_objects.GVRTextViewSceneObject;
 
 import java.io.IOException;
 import java.util.concurrent.Future;
@@ -55,23 +54,21 @@ public class MainScript extends GVRMain {
         addGroundMesh();
         addCylinderGroup();
         addGaze();
-        setTimer();
+        addTimer();
 
         scene.getRoot().attachComponent(new GVRWorld(gvrContext));
         scene.getEventReceiver().addListener(this);
-
-
     }
 
     private void addInvisibleGround() {
 
         GVRMesh mesh = gvrContext.createQuad(300.0f, 300.0f);
-        Future<GVRTexture> texture = gvrContext.loadFutureTexture(new GVRAndroidResource(gvrContext, R.drawable.empty));
+        Future<GVRTexture> texture = gvrContext.loadFutureTexture(new GVRAndroidResource(gvrContext, R.drawable.black));
         GVRMaterial material = new GVRMaterial(gvrContext);
         GVRSceneObject groundObject = new GVRSceneObject(gvrContext, mesh);
         groundObject.getRenderData().setMaterial(material);
         groundObject.getRenderData().getMaterial().setTexture("diffuseTexture", texture);
-        groundObject.getTransform().setPosition(0.0f, -1f, 0.0f);
+        groundObject.getTransform().setPosition(0.0f, -4f, 0.0f);
         groundObject.getTransform().setRotationByAxis(-90.0f, 1.0f, 0.0f, 0.0f);
         groundObject.getEventReceiver().addListener(new ICollisionEvents() {
             @Override
@@ -83,6 +80,8 @@ public class MainScript extends GVRMain {
                     GVRRigidBody rigidBody = (GVRRigidBody) gvrSceneObject.getComponent(GVRRigidBody.getComponentType());
                     rigidBody.getCollisionType().colideNotWith(INVISIBLE_GROUND_ID);
                     gvrSceneObject.setEnable(true);
+                    scene.removeSceneObject(gvrSceneObject);
+                    Log.d("douglas", "removi");
                 }
             }
 
@@ -109,21 +108,6 @@ public class MainScript extends GVRMain {
         scene.addSceneObject(groundObject);
     }
 
-    private void setTimer() {
-        GVRMesh mesh = gvrContext.createQuad(5.0f, 5.0f);
-        GVRTexture texture = gvrContext.loadTexture(new GVRAndroidResource(gvrContext, R.drawable.light_blue));
-        GVRSceneObject quadTimer = new GVRSceneObject(gvrContext, mesh, texture);
-        quadTimer.getTransform().setPosition(2.5f, 10f, 3.3f);
-        GVRTextViewSceneObject timeObject = new GVRTextViewSceneObject(gvrContext);
-        timeObject.setText("03:00");
-        timeObject.setTextColor(Color.BLACK);
-        timeObject.setGravity(Gravity.CENTER);
-        timeObject.setTextSize(20f);
-        timeObject.setRefreshFrequency(GVRTextViewSceneObject.IntervalFrequency.LOW);
-        timeObject.getTransform().setPosition(2.5f, 8f, 3.5f);
-        scene.addSceneObject(quadTimer);
-        scene.addSceneObject(timeObject);
-    }
 
     private void addCylinderGroup() throws IOException {
 
@@ -197,6 +181,14 @@ public class MainScript extends GVRMain {
         gaze.getRenderData().setRenderingOrder(100000);
         scene.getMainCameraRig().addChildObject(gaze);
 
+    }
+
+    private void addTimer() {
+
+        GVRMesh mesh = getGVRContext().createQuad(10f, 10f);
+        GVRTexture texture = getGVRContext().loadTexture(new GVRAndroidResource(getGVRContext(), R.drawable.light_blue));
+        Countdown countdownObject = new Countdown(gvrContext, mesh);
+        scene.addSceneObject(countdownObject);
     }
 
     private void addGroundMesh() {

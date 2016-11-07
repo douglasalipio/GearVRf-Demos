@@ -21,6 +21,7 @@ public class CollisionFilter {
 
         BALL_ID.colideWith(CYLINDER_ID);
         BALL_ID.colideWith(GROUND_ID);
+        BALL_ID.colideWith(BALL_ID);
 
         GROUND_ID.colideWith(BALL_ID);
         GROUND_ID.colideWith(CYLINDER_ID);

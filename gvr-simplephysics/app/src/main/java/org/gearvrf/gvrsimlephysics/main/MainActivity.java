@@ -17,6 +17,7 @@ public class MainActivity extends GVRActivity implements VRTouchPadGestureDetect
         main = new MainScript();
         touchPadGestureDetector = new VRTouchPadGestureDetector(this);
         setMain(main, "gvr.xml");
+
     }
 
     @Override
